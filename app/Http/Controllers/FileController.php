@@ -99,7 +99,6 @@ class FileController extends Controller
             $mimeType = $uploadedFile->getClientMimeType();
 
             $existingFile = File::findIdentifier($fileIdentifier)->first();
-            dd($existingFile);
 
             if (!$existingFile) {
                 $path = $uploadedFile->store('uploads', 'public');

@@ -20,6 +20,3 @@ I hold a Bachelor’s Degree of Computer Science (Data Science) from Taylor's Un
 I welcome any feedback or suggestions you may have for improvements or enhancements to this code. Your insights are invaluable to me, and I am committed to delivering the best possible results for our project.
 
 Thank you for taking the time to review my work. I am excited about the opportunity to contribute to our team's success, and I look forward to discussing this code and its potential in more detail.
-
-Best Regards,
-Mah Hui Ping
