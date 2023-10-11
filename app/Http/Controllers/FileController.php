@@ -92,6 +92,16 @@ class FileController extends Controller
     public function upload(FileRequest $request)
     {
         try {
+            $requiredColumns = [
+                'UNIQUE_KEY',
+                'PRODUCT_TITLE',
+                'PRODUCT_DESCRIPTION',
+                'STYLE#',
+                'SANMAR_MAINFRAME_COLOR',
+                'SIZE',
+                'COLOR_NAME',
+                'PIECE_PRICE',
+            ];
             $status = Config::get('constants.file_status.pending');
             $uploadedFile = $request->file('file');
             $originalName = $uploadedFile->getClientOriginalName();
@@ -100,6 +110,17 @@ class FileController extends Controller
 
             $existingFile = File::findIdentifier($fileIdentifier)->first();
 
+            $csvData = array_map('str_getcsv', file($uploadedFile));
+            $header = array_shift($csvData);
+
+            //check required column is present
+            foreach ($requiredColumns as $column) {
+            if (!in_array($column, $header)) {
+                    return redirect()->route('upload_file.upload')->with('error', "The '$column' column is missing in the uploaded CSV file.");
+                }
+            }
+
+            //Check if the same file exist
             if (!$existingFile) {
                 $path = $uploadedFile->store('uploads', 'public');
                 $status = Config::get('constants.file_status.completed');
@@ -125,8 +146,11 @@ class FileController extends Controller
         } catch (Exception $e) {
             Log::error($e->getMessage());
             $status = Config::get('constants.file_status.failed');
-            $file->status = $status;
-            $file->save();
+            //check if file is created/exist
+            if ($file) {
+                $file->status = $status;
+                $file->save();
+            }
             return redirect()->back()->with('error', 'Failed to upload file');
         }
         
